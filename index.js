@@ -8,9 +8,10 @@ const mongoose = require("mongoose");
 const database = require("./database/index");
 
 //Models
-const BooksModels = require("./database/index");
-const AuthorModels = require("./database/author");
-const PublicationModel = require("./database/publications");
+const BooksModel = require("./database/index");
+const AuthorModel = require("./database/author");
+const PublicationModel = require("./database/publication");
+const BookModel = require("./database/book");
 
 //Initializing express
 const shapeAI = express();
@@ -37,8 +38,9 @@ Parameters          NONE
 Method              GET
 */
 
-shapeAI.get("/", (req, res) => {
-    return res.json({ books: database.books });
+shapeAI.get("/", async (req, res) => {
+    const getAllBooks = await BookModel.find();
+    return res.json(getAllBooks);
 });
 
 /*
@@ -49,12 +51,10 @@ Parameters          isbn
 Method              GET
 */
 
-shapeAI.get("/is/:isbn", (req, res) => {
-    const getSpecificBook = database.books.filter(
-        (book) => book.ISBN === req.params.isbn
-    );
+shapeAI.get("/is/:isbn", async (req, res) => {
+  const getSpecificBook = await BookModel.findOne({ISBN: req.params.isbn });
 
-    if (getSpecificBook.length === 0){
+    if (!getSpecificBook){
       return res.json({
         error: `No book found for the ISBN of ${req.params.isbn}`,
       });
@@ -71,12 +71,12 @@ Parameters          category
 Method              GET
 */
 
-shapeAI.get("/c/:category", (req, res) => {
-    const getSpecificBooks = database.books.filter(
-        (book) => book.category.includes(req.params.category)
-    );
+shapeAI.get("/c/:category", async (req, res) => {
+  const getSpecificBooks = await BookModel.findOne({
+    category: req.params.category,
+   });
 
-    if (getSpecificBooks.length === 0){
+    if (!getSpecificBooks){
       return res.json({
         error: `No book found for the category of ${req.params.category}`,
       });
@@ -93,15 +93,16 @@ Parameters          NONE
 Method              GET
 */
 
-shapeAI.get("/author", (req, res) => {
-  return res.json({ authors: database.authors });
+shapeAI.get("/author", async (req, res) => {
+  const getAllAuthors = await AuthorModel.find();
+  return res.json({ authors: getAllAuthors });
 });
 
 /*
 Route               /authors
-Description         get all authors
+Description         get a list of authors based on a book's ISBN
 Access              PUBLIC
-Parameters          NONE
+Parameters          isbn
 Method              GET
 */
 
@@ -136,13 +137,15 @@ Route               /book/new
 Description         add new books
 Access              PUBLIC
 Parameters          NONE
-Method              GET
+Method              post
 */
 
-shapeAI.post("/book/new", (req, res) => {
+shapeAI.post("/book/new", async (req, res) => {
   const { newBook } = req.body;
-  database.books.push(newBook);
-  return res.json({ books: database.books, message: "book was added!" });
+
+  BookModel.create(newBook);
+
+  return res.json({ message: "book was added!" });
 });
 
 /*
@@ -155,8 +158,10 @@ Method              post
 
 shapeAI.post("/author/new", (req, res) => {
   const { newAuthor } = req.body;
-  database.authors.push(newAuthor);
-  return res.json({ authors: database.authors, message: "author was added!" });
+
+  AuthorModel.create(newAuthor);
+
+  return res.json({ message: "author was added!" });
 });
 
 /*
