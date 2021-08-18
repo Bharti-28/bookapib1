@@ -172,15 +172,21 @@ Parameters          title
 Method              put
 */
 
-shapeAI.put("/book/update/:isbn", (req, res) => {
-  database.books.forEach((book) => {
-    if (book.ISBN === req.params.isbn) {
-       book.title =req.body.bookTitle;
-       return;
-    }  
-  });
+shapeAI.put("/book/update/:isbn", async (req, res) => {
 
-   return res.json({ books: database.books });
+  const updatedBook = await BookModel.findOneAndUpdate(
+   {
+    ISBN: req.params.isbn,
+   },
+   {
+     title: req.body.bookTitle,
+   },
+   {
+     new: true,
+   }
+  );
+
+   return res.json({ books: updatedBook });
   });
 
 /*
