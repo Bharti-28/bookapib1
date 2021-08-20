@@ -79,3 +79,28 @@
 // delete a publication [Task] 🔥🚀
 
 // Add mongoose validation to All the models [Task] 🔥
+
+
+
+/*
+{
+    "bookTitle": {
+        "ISBN": "12345ONE",
+        "title": "Getting started with MERN",
+        "authors": [
+            1,
+            2
+        ],
+        "language": "en",
+        "pubDate": "2021-07-07",
+        "numOfPage": 225,
+        "category": [
+            "fiction",
+            "programming",
+            "teach",
+            "web dev"
+        ],
+        "publication": 1
+    }
+}
+*/ 
