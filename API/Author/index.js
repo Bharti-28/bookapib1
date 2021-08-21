@@ -24,8 +24,9 @@ Router.get("/", async (req, res) => {
   Method              GET
   */
   
-  Router.get("/:isbn", (req, res) => {
-    const getSpecificAuthors = database.authors.filter((author) =>
+  Router.get("/:isbn", async (req, res) => {
+    try {
+      const getSpecificAuthors = database.authors.filter((author) =>
       author.books.includes(req.params.isbn)
   );
   
@@ -36,6 +37,9 @@ Router.get("/", async (req, res) => {
   }
   
      return res.json({ authors: getSpecificAuthors });
+    }catch (error){
+      return res.json({ error: error.message})
+    }
   });
 
   /*

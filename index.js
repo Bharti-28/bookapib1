@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 //Microservices routes
 const Books = require("./API/Book");
-const Authors =require(".API/Author");
+const Authors =require("./API/Author");
 const Publications = require("./API/Publication");
 
 //Initializing express
@@ -28,7 +28,7 @@ mongoose
 
 //Initialising Microservices
 shapeAI.use("/book", Books);
-shapeAI.use("/author",Authos);
+shapeAI.use("/author",Authors);
 shapeAI.use("/publication", Publications);
 
 shapeAI.listen(3000, () => console.log("Server running!!"))
